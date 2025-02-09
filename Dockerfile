@@ -12,10 +12,9 @@ RUN apt upgrade
 RUN apt install -y wget
 
 # PREPARE DEBCONF
-RUN echo 'signage-orchestrator-backend signage-orchestrator-backend/admin-password kaka' \
-echo 'tzdata tzdata/Areas select Europe' \
-echo 'tzdata tzdata/Zones/Europe select Berlin' \
-| debconf-set-selections
+RUN echo 'signage-orchestrator-backend signage-orchestrator-backend/admin-password kaka' | debconf-set-selections
+RUN echo 'tzdata tzdata/Areas select Europe' | debconf-set-selections
+RUN echo 'tzdata tzdata/Zones/Europe select Berlin' | debconf-set-selections
 
 # INSTALL SIGNAGE ORCHESTRATOR
 WORKDIR /root
