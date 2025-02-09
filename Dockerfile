@@ -10,6 +10,7 @@ RUN apt upgrade
 
 # INSTALL DEPENDENCIES
 RUN apt install -y wget
+RUN RUNLEVEL=1 dpkg --configure -a
 
 # PREPARE ARGUMENTS
 ARG TZ_AREA
