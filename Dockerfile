@@ -1,6 +1,6 @@
 FROM debian:12
 
-# ARGUMENTS
+# PREPARE ENVIRONMENT
 ARG DEBIAN_FRONTEND=noninteractive
 ARG DEBCONF_NONINTERACTIVE_SEEN=true
 
@@ -11,10 +11,15 @@ RUN apt upgrade
 # INSTALL DEPENDENCIES
 RUN apt install -y wget
 
+# PREPARE ARGUMENTS
+ARG BACKEND_PASSWORD
+ARG TZ_AREA
+ARG TZ_CITY
+
 # PREPARE DEBCONF
-RUN echo 'signage-orchestrator-backend signage-orchestrator-backend/admin-password password kaka' |debconf-set-selections
-RUN echo 'tzdata tzdata/Areas select Europe' |debconf-set-selections
-RUN echo 'tzdata tzdata/Zones/Europe select Berlin' |debconf-set-selections
+RUN echo 'signage-orchestrator-backend signage-orchestrator-backend/admin-password password $BACKEND_PASSWORD' |echo 'tzdata tzdata/Areas select $TZ_AREA' |echo 'tzdata tzdata/Zones/$TZ_AREA select $TZ_CITY' |debconf-set-selections
+#RUN echo 'tzdata tzdata/Areas select $TZ_AREA' |debconf-set-selections
+#RUN echo 'tzdata tzdata/Zones/$TZ_AREA select $TZ_CITY' |debconf-set-selections
 
 # INSTALL SIGNAGE ORCHESTRATOR
 WORKDIR /root
