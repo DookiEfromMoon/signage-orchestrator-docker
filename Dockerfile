@@ -3,6 +3,8 @@ FROM debian:12
 # PREPARE ENVIRONMENT
 ARG DEBIAN_FRONTEND=noninteractive
 ARG DEBCONF_NONINTERACTIVE_SEEN=true
+ENV RUNLEVEL 1
+RUN printf '#!/bin/sh\nexit 0' > /usr/sbin/policy-rc.d
 
 # INSTALL UPDATES
 RUN apt update
@@ -10,7 +12,6 @@ RUN apt upgrade
 
 # INSTALL DEPENDENCIES
 RUN apt install -y wget
-RUN RUNLEVEL=1 dpkg --configure -a
 
 # PREPARE ARGUMENTS
 ARG TZ_AREA
