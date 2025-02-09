@@ -16,7 +16,8 @@ ARG TZ_AREA
 ARG TZ_CITY
 
 # PREPARE DEBCONF
-RUN --mount=type=secret,id=backend_password | export BACKEND_PASSWORD=$(cat /run/secrets/backend_password)
+RUN --mount=type=secret,id=backend_password \
+    export BACKEND_PASSWORD=$(cat /run/secrets/backend_password)
 RUN echo 'signage-orchestrator-backend signage-orchestrator-backend/admin-password password $BACKEND_PASSWORD' |echo 'tzdata tzdata/Areas select $TZ_AREA' |echo 'tzdata tzdata/Zones/$TZ_AREA select $TZ_CITY' |debconf-set-selections
 
 # INSTALL SIGNAGE ORCHESTRATOR
