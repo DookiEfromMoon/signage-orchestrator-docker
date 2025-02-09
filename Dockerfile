@@ -21,7 +21,6 @@ ARG TZ_CITY
 RUN --mount=type=secret,id=backend_password \
     export BACKEND_PASSWORD=$(cat /run/secrets/backend_password)
 RUN echo 'signage-orchestrator-backend signage-orchestrator-backend/admin-password string $BACKEND_PASSWORD' |\
-    echo 'signage-orchestrator-backend signage-orchestrator-backend/admin-password-note string $BACKEND_PASSWORD' |\
     echo 'tzdata tzdata/Areas select $TZ_AREA' |\
     echo 'tzdata tzdata/Zones/$TZ_AREA select $TZ_CITY' |\
     debconf-set-selections
@@ -32,4 +31,14 @@ WORKDIR /root
 RUN wget https://github.com/marco-buratto/signage-orchestrator/releases/download/v1.2/signage-orchestrator-backend_1.2-3_all.deb
 RUN wget https://github.com/marco-buratto/signage-orchestrator/releases/download/v1.2/signage-orchestrator-ui_1.2-1_all.deb
 
-RUN apt install -y ./signage-orchestrator-backend_1.2-3_all.deb
+# TESTING
+RUN mkdir package
+RUN dpkg-deb -R ./signage-orchestrator-backend_1.2-3_all.deb package
+
+RUN echo '#!/bin/bash -x' >> ./package/DEBIAN/clone
+RUN cat ./package/DEBIAN/postinst |tail -n+2 >> ./package/DEBIAN/clone
+RUN rm ./package/DEBIAN/postinst && mv ./package/DEBIAN/clone ./package/DEBIAN/postinst
+
+RUN dpkg-deb -b package signage-orchestrator-backend_1.2-3_all_patched.deb
+
+RUN apt install -y ./signage-orchestrator-backend_1.2-3_all_patched.deb
