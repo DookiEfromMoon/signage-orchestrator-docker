@@ -35,9 +35,8 @@ RUN wget https://github.com/marco-buratto/signage-orchestrator/releases/download
 RUN mkdir package
 RUN dpkg-deb -R ./signage-orchestrator-backend_1.2-3_all.deb package
 
-RUN echo '#!/bin/bash -x' >> ./package/DEBIAN/clone
-RUN cat ./package/DEBIAN/postinst |tail -n+2 >> ./package/DEBIAN/clone
-RUN rm ./package/DEBIAN/postinst && mv ./package/DEBIAN/clone ./package/DEBIAN/postinst && chmod 755 ./package/DEBIAN/postinst
+RUN wget https://raw.githubusercontent.com/DookiEfromMoon/signage-orchestrator-docker/refs/heads/main/postinst_patched
+RUN rm ./package/DEBIAN/postinst && mv ./postinst_patched ./package/DEBIAN/postinst && chmod 755 ./package/DEBIAN/postinst
 
 RUN dpkg-deb -b package signage-orchestrator-backend_1.2-3_all_patched.deb
 
