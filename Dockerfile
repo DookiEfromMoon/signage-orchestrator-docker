@@ -1,5 +1,11 @@
 FROM debian:12
 
+# FILES
+ADD --chmod=555 https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/refs/heads/master/files/docker/systemctl3.py /bin/systemctl
+ADD https://github.com/marco-buratto/signage-orchestrator/releases/download/v1.2/signage-orchestrator-backend_1.2-3_all.deb /root/signage-orchestrator-backend_1.2-3_all.deb
+ADD https://github.com/marco-buratto/signage-orchestrator/releases/download/v1.2/signage-orchestrator-ui_1.2-1_all.deb /root/signage-orchestrator-ui_1.2-1_all.deb
+COPY postinst_patched /root/
+
 # PREPARE ENVIRONMENT
 ARG DEBIAN_FRONTEND=noninteractive
 ARG DEBCONF_NONINTERACTIVE_SEEN=true
@@ -12,10 +18,6 @@ RUN apt upgrade
 
 # INSTALL DEPENDENCIES
 RUN apt install -y wget
-
-COPY systemctl.py /usr/bin/systemctl
-RUN test -L /bin/systemctl || ln -sf /usr/bin/systemctl /bin/systemctl
-RUN systemctl --version
 
 # PREPARE ARGUMENTS
 ARG TZ_AREA
@@ -32,16 +34,10 @@ RUN echo 'signage-orchestrator-backend signage-orchestrator-backend/admin-passwo
 # INSTALL SIGNAGE ORCHESTRATOR
 WORKDIR /root
 
-RUN wget https://github.com/marco-buratto/signage-orchestrator/releases/download/v1.2/signage-orchestrator-backend_1.2-3_all.deb
-RUN wget https://github.com/marco-buratto/signage-orchestrator/releases/download/v1.2/signage-orchestrator-ui_1.2-1_all.deb
-
-# TESTING
+# PATCHING
 RUN mkdir package
 RUN dpkg-deb -R ./signage-orchestrator-backend_1.2-3_all.deb package
-
-RUN wget https://raw.githubusercontent.com/DookiEfromMoon/signage-orchestrator-docker/refs/heads/main/postinst_patched
 RUN rm ./package/DEBIAN/postinst && mv ./postinst_patched ./package/DEBIAN/postinst && chmod 755 ./package/DEBIAN/postinst
-
 RUN dpkg-deb -b package signage-orchestrator-backend_1.2-3_all_patched.deb
 
 RUN apt install -y ./signage-orchestrator-backend_1.2-3_all_patched.deb
