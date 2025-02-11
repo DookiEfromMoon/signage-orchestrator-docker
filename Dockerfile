@@ -1,7 +1,7 @@
 FROM debian:12
 
 # FILES
-ADD --chmod=555 https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/refs/heads/master/files/docker/systemctl3.py /bin/systemctl
+ADD --chmod=555 systemctl3.py /bin/systemctl
 ADD https://github.com/marco-buratto/signage-orchestrator/releases/download/v1.2/signage-orchestrator-backend_1.2-3_all.deb /root/signage-orchestrator-backend_1.2-3_all.deb
 ADD https://github.com/marco-buratto/signage-orchestrator/releases/download/v1.2/signage-orchestrator-ui_1.2-1_all.deb /root/signage-orchestrator-ui_1.2-1_all.deb
 COPY postinst_patched /root/
@@ -14,9 +14,6 @@ RUN printf '#!/bin/sh\nexit 0' > /usr/sbin/policy-rc.d
 
 # INSTALL UPDATES
 RUN apt update
-
-# INSTALL DEPENDENCIES
-#RUN apt install -y wget
 
 # PREPARE ARGUMENTS
 ARG TZ_AREA
