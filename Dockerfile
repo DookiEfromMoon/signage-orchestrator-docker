@@ -37,3 +37,6 @@ RUN rm ./package/DEBIAN/postinst && mv ./postinst_patched ./package/DEBIAN/posti
 RUN dpkg-deb -b package signage-orchestrator-backend_1.2-3_all_patched.deb
 
 RUN apt install -y ./signage-orchestrator-backend_1.2-3_all_patched.deb
+RUN apt install -y ./signage-orchestrator-ui_1.2-1_all.deb
+
+CMD /bin/systemctl
