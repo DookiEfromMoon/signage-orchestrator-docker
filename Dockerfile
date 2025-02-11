@@ -5,6 +5,7 @@ ADD --chmod=555 systemctl3.py /bin/systemctl
 ADD https://github.com/marco-buratto/signage-orchestrator/releases/download/v1.2/signage-orchestrator-backend_1.2-3_all.deb /root/signage-orchestrator-backend_1.2-3_all.deb
 ADD https://github.com/marco-buratto/signage-orchestrator/releases/download/v1.2/signage-orchestrator-ui_1.2-1_all.deb /root/signage-orchestrator-ui_1.2-1_all.deb
 COPY postinst_patched /root/
+COPY orchestrator_patched.service /root/
 
 # PREPARE ENVIRONMENT
 ARG DEBIAN_FRONTEND=noninteractive
@@ -34,6 +35,7 @@ WORKDIR /root
 RUN mkdir package
 RUN dpkg-deb -R ./signage-orchestrator-backend_1.2-3_all.deb package
 RUN rm ./package/DEBIAN/postinst && mv ./postinst_patched ./package/DEBIAN/postinst && chmod 755 ./package/DEBIAN/postinst
+RUN rm ./package/etc/systemd/system/orchestrator.service && mv ./orchestrator_patched.service ./package/etc/systemd/system/orchestrator.service
 RUN dpkg-deb -b package signage-orchestrator-backend_1.2-3_all_patched.deb
 
 RUN apt install -y ./signage-orchestrator-backend_1.2-3_all_patched.deb
