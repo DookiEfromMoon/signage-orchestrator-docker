@@ -13,6 +13,8 @@ RUN apt upgrade
 # INSTALL DEPENDENCIES
 RUN apt install -y wget
 RUN wget https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/master/files/docker/systemctl3.py -O /usr/local/bin/systemctl
+RUN echo $PATH
+RUN systemctl --version
 
 # PREPARE ARGUMENTS
 ARG TZ_AREA
