@@ -12,8 +12,9 @@ RUN apt upgrade
 
 # INSTALL DEPENDENCIES
 RUN apt install -y wget
-RUN wget https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/master/files/docker/systemctl3.py -O /usr/local/bin/systemctl
-RUN echo $PATH
+
+COPY systemctl.py /usr/bin/systemctl
+RUN test -L /bin/systemctl || ln -sf /usr/bin/systemctl /bin/systemctl
 RUN systemctl --version
 
 # PREPARE ARGUMENTS
