@@ -14,10 +14,9 @@ RUN printf '#!/bin/sh\nexit 0' > /usr/sbin/policy-rc.d
 
 # INSTALL UPDATES
 RUN apt update
-RUN apt upgrade
 
 # INSTALL DEPENDENCIES
-RUN apt install -y wget
+#RUN apt install -y wget
 
 # PREPARE ARGUMENTS
 ARG TZ_AREA
